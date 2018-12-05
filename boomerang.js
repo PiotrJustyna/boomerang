@@ -3430,9 +3430,11 @@ BOOMR_check_doc_domain();
 				impl.beacon_url = "https:" + impl.beacon_url;
 			}
 
+			var beaconUrl = impl.beacon_url;
+
 			// if there are already url parameters in the beacon url,
 			// change the first parameter prefix for the boomerang url parameters to &
-			url = impl.beacon_url + ((impl.beacon_url.indexOf("?") > -1) ? "&" : "?") + paramsJoined;
+			url = beaconUrl + ((beaconUrl.indexOf("?") > -1) ? "&" : "?") + paramsJoined;
 
 			//
 			// Try to send an IMG beacon if possible (which is the most compatible),
@@ -3470,7 +3472,7 @@ BOOMR_check_doc_domain();
 					type: "application/x-www-form-urlencoded"
 				});
 
-				if (w.navigator.sendBeacon(impl.beacon_url, blobData)) {
+				if (w.navigator.sendBeacon(beaconUrl, blobData)) {
 					return true;
 				}
 
@@ -3507,12 +3509,12 @@ BOOMR_check_doc_domain();
 				// Send a form-encoded XHR POST beacon
 				xhr = new (BOOMR.window.orig_XMLHttpRequest || BOOMR.orig_XMLHttpRequest || BOOMR.window.XMLHttpRequest)();
 				try {
-					this.sendXhrPostBeacon(xhr, paramsJoined, impl.beacon_url, impl.beacon_auth_token, impl.beacon_auth_key, impl.beacon_with_credentials);
+					this.sendXhrPostBeacon(xhr, paramsJoined, beaconUrl, impl.beacon_auth_token, impl.beacon_auth_key, impl.beacon_with_credentials);
 				}
 				catch (e) {
 					// if we had an exception with the window XHR object, try our IFRAME XHR
 					xhr = new BOOMR.boomerang_frame.XMLHttpRequest();
-					this.sendXhrPostBeacon(xhr, paramsJoined, impl.beacon_url, impl.beacon_auth_token, impl.beacon_auth_key, impl.beacon_with_credentials);
+					this.sendXhrPostBeacon(xhr, paramsJoined, beaconUrl, impl.beacon_auth_token, impl.beacon_auth_key, impl.beacon_with_credentials);
 				}
 			}
 
