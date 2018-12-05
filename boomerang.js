@@ -3384,6 +3384,22 @@ BOOMR_check_doc_domain();
 		},
 
 		/**
+		 * Makes sure the URL is ready for adding a query string.
+		 * Either "?" or "&" is added at the end.
+		 *
+		 * @param {string} url Url to be prepared
+		 *
+		 * @returns {string} Url with "?" or "&" at the end.
+		 */
+		prepareBeaconUrlForQueryString: function(url){
+			if(url){
+				return url + ((url.indexOf("?") > -1) ? "&" : "?");
+			}
+			
+			return url;
+		},
+
+		/**
 		 * Sends beacon data via the Beacon API, XHR or Image
 		 *
 		 * @param {object} data Data
@@ -3431,10 +3447,15 @@ BOOMR_check_doc_domain();
 			}
 
 			var beaconUrl = impl.beacon_url;
+			var applicationId = data["application_id"];
+
+			if(applicationId){
+				beaconUrl = prepareBeaconUrlForQueryString(beaconUrl) + applicationId;
+			}
 
 			// if there are already url parameters in the beacon url,
 			// change the first parameter prefix for the boomerang url parameters to &
-			url = beaconUrl + ((beaconUrl.indexOf("?") > -1) ? "&" : "?") + paramsJoined;
+			url = prepareBeaconUrlForQueryString(beaconUrl) + paramsJoined;
 
 			//
 			// Try to send an IMG beacon if possible (which is the most compatible),
